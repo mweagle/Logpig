@@ -45,7 +45,7 @@ Example logback.xml configuration:
 		<!--  S3 Settings -->
 	
     	<encoder>
-    	 <!--  Tab delimited so that PIG default loader can parse it.  -->
+    	 <!--  Tab delimited so that Pig default loader can parse it without needing a UDF  -->
       	<pattern>%date{yyyy-MM-dd'T'HH:mm:ss.SSS,GMT}\t*%4p*\t%m%n</pattern>
     	</encoder>
     	<rollingPolicy class="com.logpig.mweagle.rolling.S3TimeBasedRollingPolicy">
