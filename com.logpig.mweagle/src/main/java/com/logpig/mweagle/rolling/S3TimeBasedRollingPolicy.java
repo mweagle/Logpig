@@ -84,7 +84,7 @@ public class S3TimeBasedRollingPolicy<E> extends ch.qos.logback.core.rolling.Tim
 	{
 		String elapsedPeriodsFileName = super.getTimeBasedFileNamingAndTriggeringPolicy().getElapsedPeriodsFileName();
 
-		String elpasedPeriodStem = FileFilterUtil.afterLastSlash(elapsedPeriodsFileName);
+		String elapsedPeriodStem = FileFilterUtil.afterLastSlash(elapsedPeriodsFileName);
 
 		if (compressionMode == CompressionMode.NONE)
 		{
@@ -98,11 +98,11 @@ public class S3TimeBasedRollingPolicy<E> extends ch.qos.logback.core.rolling.Tim
 		{
 			if (getParentsRawFileProperty() == null)
 			{
-				future = futureAsyncCompressAndPost(elapsedPeriodsFileName, elapsedPeriodsFileName, elpasedPeriodStem);
+				future = futureAsyncCompressAndPost(elapsedPeriodsFileName, elapsedPeriodsFileName, elapsedPeriodStem);
 			}
 			else
 			{
-				future = renamedRawAndAsyncFutureCompressAndPost(elapsedPeriodsFileName, elpasedPeriodStem);
+				future = renamedRawAndAsyncFutureCompressAndPost(elapsedPeriodsFileName, elapsedPeriodStem);
 			}
 		}
 		if (archiveRemover != null)
@@ -119,7 +119,7 @@ public class S3TimeBasedRollingPolicy<E> extends ch.qos.logback.core.rolling.Tim
 				.getTimeBasedFileNamingAndTriggeringPolicy();
 		final String periodFileName = triggerPolicy.getCurrentPeriodsFileNameWithoutCompressionSuffix();
 		final String parentsRawFilename = getParentsRawFileProperty();
-		final String elpasedPeriodStem = FileFilterUtil.afterLastSlash(periodFileName);
+		final String elapsedPeriodStem = FileFilterUtil.afterLastSlash(periodFileName);
 		final String activeFile = this.getActiveFileName();
 
 		String extension = "";
@@ -148,12 +148,12 @@ public class S3TimeBasedRollingPolicy<E> extends ch.qos.logback.core.rolling.Tim
 		{
 			if (null != parentsRawFilename)
 			{
-				compressor.compress(activeFile, rolloverFilename, elpasedPeriodStem);
+				compressor.compress(activeFile, rolloverFilename, elapsedPeriodStem);
 				rolloverName = rolloverFilename;
 			}
 			else
 			{
-				compressor.compress(activeFile, activeFile, elpasedPeriodStem);
+				compressor.compress(activeFile, activeFile, elapsedPeriodStem);
 				rolloverName = activeFile;
 			}
 		}
