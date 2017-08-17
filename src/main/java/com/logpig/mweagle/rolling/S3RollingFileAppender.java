@@ -100,6 +100,10 @@ public class S3RollingFileAppender<E> extends RollingFileAppender<E>
 		return s3Settings.bucketName;
 	}
 
+	public void setFolderName(String folderName) {s3Settings.folderName = folderName; }
+
+	public String getFolderName() { return s3Settings.folderName; }
+
 	public void setRegionName(String regionName)
 	{
 		s3Settings.regionName = Region.fromValue(regionName);

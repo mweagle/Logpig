@@ -35,6 +35,8 @@ public class S3Settings {
 
 	public String bucketName;
 
+	public String folderName;
+
 	public Region regionName = S3Settings.DEFAULT_REGION_NAME;
 
 	public boolean mockPut = false;
