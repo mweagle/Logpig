@@ -1,0 +1,32 @@
+sudo: required
+language: java
+
+jdk:
+  - oraclejdk8
+
+script:
+  - "./gradlew build -x test"
+
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+deploy:
+  # deploy to snapshot location
+  - provider: script
+    script: "./gradlew artifactoryPublish"
+    skip_cleanup: true
+    on:
+      branch: develop
+  # TODO deploy to release location, right now release and snapshot are one in the same
+  - provider: script
+    script: "./gradlew artifactoryPublish"
+    skip_cleanup: true
+    on:
+      branch: master
+      tags: true
