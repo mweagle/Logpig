@@ -34,10 +34,17 @@ public class S3Settings {
 	public String secretKey;
 
 	public String bucketName;
-
+	
 	public String folderName;
 
-	public Region regionName = S3Settings.DEFAULT_REGION_NAME;
+	public String getFolderName() {
+        return folderName;
+    }
+
+    public void setFolderName(String folderName) {
+        this.folderName = folderName;
+    }
+    public Region regionName = S3Settings.DEFAULT_REGION_NAME;
 
 	public boolean mockPut = false;
 

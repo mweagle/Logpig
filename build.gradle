@@ -43,6 +43,7 @@ repositories {
 dependencies {
   compile 'com.amazonaws:aws-java-sdk-s3:1.11.178'
   compile 'ch.qos.logback:logback-classic:1.2.3'
+  compile 'org.slf4j:slf4j-api:1.7.21'
 }
 
 publishing {
@@ -50,7 +51,7 @@ publishing {
         MainPublication(MavenPublication) {
             from components.java
             groupId project.group
-            artifactId 'common'
+            artifactId 'logpig'
             version project.version
 
             artifact sourcesJar
