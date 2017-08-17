@@ -17,8 +17,9 @@ package com.logpig.mweagle.aws;
 
 import java.io.File;
 import java.net.HttpURLConnection;
-import java.util.UUID;
-
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +42,8 @@ public class S3FilePutRunnable implements Runnable
 	private final String filePath;
 
 	private final S3Settings s3Settings;
+	
+	private static final DateTimeFormatter yyyyMMddFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
 	/**
 	 * Ctor
@@ -74,8 +77,9 @@ public class S3FilePutRunnable implements Runnable
 						s3Client.createBucket(this.s3Settings.bucketName, this.s3Settings.regionName);
 					}
 					final File logfile = new File(this.filePath);
-					final String keyName = UUID.randomUUID().toString();
-					final PutObjectRequest request = new PutObjectRequest(this.s3Settings.bucketName, keyName, logfile);
+					
+					String s3Location = s3Settings.folderName + File.separator + yyyyMMddFormat.format(OffsetDateTime.now(ZoneId.of("UTC"))) + File.separator+ logfile.getName();
+					final PutObjectRequest request = new PutObjectRequest(this.s3Settings.bucketName, s3Location, logfile);
 					s3Client.putObject(request);
 				}
 				else

@@ -70,6 +70,16 @@ public class S3RollingFileAppender<E> extends RollingFileAppender<E>
 		super.start();
 	}
 
+	public void setFolderName(String folderName)
+	{
+	    s3Settings.folderName = folderName;
+	}
+	
+	public String getFolderName()
+	{
+	    return s3Settings.folderName;
+	}
+	
 	public void setAccessKey(String accessKey)
 	{
 		s3Settings.accessKey = accessKey;
@@ -99,10 +109,6 @@ public class S3RollingFileAppender<E> extends RollingFileAppender<E>
 	{
 		return s3Settings.bucketName;
 	}
-
-	public void setFolderName(String folderName) {s3Settings.folderName = folderName; }
-
-	public String getFolderName() { return s3Settings.folderName; }
 
 	public void setRegionName(String regionName)
 	{
