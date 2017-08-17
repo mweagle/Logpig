@@ -1,0 +1,85 @@
+group = "com.logpig.mweagle"
+version = "0.0.1-SNAPSHOT"
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath('org.jfrog.buildinfo:build-info-extractor-gradle:4.4.9')
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.artifactory'
+
+def artifactory_user = hasProperty('ARTIFACTORY_USER') ? ARTIFACTORY_USER : System.getenv('ARTIFACTORY_USER')
+def artifactory_key = hasProperty('ARTIFACTORY_KEY') ? ARTIFACTORY_KEY : System.getenv('ARTIFACTORY_KEY')
+def artifactory_deploy_user = hasProperty('ARTIFACTORY_DEPLOY_USER') ? ARTIFACTORY_DEPLOY_USER : System.getenv('ARTIFACTORY_DEPLOY_USER')
+def artifactory_deploy_key = hasProperty('ARTIFACTORY_DEPLOY_KEY') ? ARTIFACTORY_DEPLOY_KEY : System.getenv('ARTIFACTORY_DEPLOY_KEY')
+
+repositories {
+    maven {
+        url  "http://packages.creditcards.com/artifactory/maven-private"
+        credentials {
+            username artifactory_user
+            password artifactory_key
+        }
+    }
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+  compile 'com.amazonaws:aws-java-sdk-s3:1.11.178'
+  compile 'ch.qos.logback:logback-classic:1.2.3'
+}
+
+publishing {
+    publications {
+        MainPublication(MavenPublication) {
+            from components.java
+            groupId project.group
+            artifactId 'common'
+            version project.version
+
+            artifact sourcesJar
+        }
+    }
+}
+
+ artifactory {
+    publish {
+        contextUrl = 'https://packages.creditcards.com/artifactory'
+
+        repository {
+            repoKey = 'maven-private'
+            username = artifactory_deploy_user
+            password = artifactory_deploy_key
+        }
+
+        defaults {
+            publications('MainPublication')
+            publishArtifacts = true
+        }
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
