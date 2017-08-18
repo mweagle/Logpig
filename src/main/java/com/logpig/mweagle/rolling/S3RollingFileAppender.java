@@ -79,26 +79,6 @@ public class S3RollingFileAppender<E> extends RollingFileAppender<E>
 	{
 	    return s3Settings.folderName;
 	}
-	
-	public void setAccessKey(String accessKey)
-	{
-		s3Settings.accessKey = accessKey;
-	}
-
-	public String getAccessKey()
-	{
-		return s3Settings.accessKey;
-	}
-
-	public void setSecretKey(String secretKey)
-	{
-		s3Settings.secretKey = secretKey;
-	}
-
-	public String getSecretKey()
-	{
-		return s3Settings.secretKey;
-	}
 
 	public void setBucketName(String bucketName)
 	{
