@@ -29,27 +29,25 @@ public class S3Settings {
 
 	public final static Region DEFAULT_REGION_NAME = Region.US_Standard;
 
-	public String accessKey;
-
-	public String secretKey;
-
 	public String bucketName;
+	
+	public String folderName;
 
-	public Region regionName = S3Settings.DEFAULT_REGION_NAME;
+	public String getFolderName() {
+        return folderName;
+    }
+
+    public void setFolderName(String folderName) {
+        this.folderName = folderName;
+    }
+    public Region regionName = S3Settings.DEFAULT_REGION_NAME;
 
 	public boolean mockPut = false;
 
 	public int retryCount = S3Settings.DEFAULT_RETRY_COUNT;
 
-	public BasicAWSCredentials getAWSCredentials() {
-		return new BasicAWSCredentials(accessKey, secretKey);
-	}
-
 	public ArrayList<String> getPostSettingsErrors() {
 		ArrayList<String>	errors = new ArrayList<String>();
-		
-		getSettingError("accessKey", accessKey, errors);
-		getSettingError("secretKey", secretKey, errors);
 		getSettingError("bucketName", bucketName, errors);
 		getBucketNameErrors(errors);
 		getRetryValueErrors(errors);

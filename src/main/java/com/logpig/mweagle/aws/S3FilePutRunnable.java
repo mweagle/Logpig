@@ -17,14 +17,21 @@ package com.logpig.mweagle.aws;
 
 import java.io.File;
 import java.net.HttpURLConnection;
-import java.util.UUID;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.logpig.mweagle.rolling.S3Settings;
 
@@ -41,6 +48,8 @@ public class S3FilePutRunnable implements Runnable
 	private final String filePath;
 
 	private final S3Settings s3Settings;
+	
+	private static final DateTimeFormatter yyyyMMddFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
 	/**
 	 * Ctor
@@ -62,7 +71,17 @@ public class S3FilePutRunnable implements Runnable
 		boolean createBucket = false;
 		boolean doExit = false;
 		int attempt = 0;
-		final AmazonS3Client s3Client = new AmazonS3Client(this.s3Settings.getAWSCredentials());
+		AWSCredentialsProvider credentialsProvider = new EnvironmentVariableCredentialsProvider();
+
+		if (credentialsProvider.getCredentials() == null
+				|| credentialsProvider.getCredentials().getAWSAccessKeyId() == null
+				|| credentialsProvider.getCredentials().getAWSSecretKey() == null) {
+
+			credentialsProvider = InstanceProfileCredentialsProvider.getInstance();
+		}
+
+		final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withCredentials(credentialsProvider).build();
+
 		while (!doExit && attempt != this.s3Settings.retryCount)
 		{
 			try
@@ -71,12 +90,13 @@ public class S3FilePutRunnable implements Runnable
 				{
 					if (createBucket)
 					{
-						s3Client.createBucket(this.s3Settings.bucketName, this.s3Settings.regionName);
+						s3.createBucket(this.s3Settings.bucketName, this.s3Settings.regionName);
 					}
 					final File logfile = new File(this.filePath);
-					final String keyName = UUID.randomUUID().toString();
-					final PutObjectRequest request = new PutObjectRequest(this.s3Settings.bucketName, keyName, logfile);
-					s3Client.putObject(request);
+					
+					String s3Location = s3Settings.folderName + File.separator + yyyyMMddFormat.format(OffsetDateTime.now(ZoneId.of("UTC"))) + File.separator+ logfile.getName();
+					final PutObjectRequest request = new PutObjectRequest(this.s3Settings.bucketName, s3Location, logfile);
+					s3.putObject(request);
 				}
 				else
 				{
