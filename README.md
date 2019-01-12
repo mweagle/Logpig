@@ -9,7 +9,7 @@ Logback Appender
 -------
 My goal was to make an Appender that worked like the existing RollingLogfileAppenders, but that would additionally send the rolled log files to S3.  
 
-The resulting appender mimics Logback's current [appenders](http://logback.qos.ch/manual/appenders.html), and includes automatic posting on logifle rollover and Runtime shutdown.
+The resulting appender mimics Logback's current [appenders](http://logback.qos.ch/manual/appenders.html), and includes automatic posting on logfile rollover and Runtime shutdown.
 
 To use the custom appender, in your __logback.xml__ file use the following classnames:
 
